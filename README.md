@@ -7,4 +7,4 @@ Let's see how far this rabbit hole goes.
 
 ## Done
 
-[x] Create Repo
+- [x] Create Repo
