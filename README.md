@@ -5,11 +5,11 @@ Let's see how far this rabbit hole goes.
 
 ## Todo
 
-- [ ] Setup config for app
-- [ ] Connect to Vault
-  - [ ] Load Vault secrets into config
-
-## Done
-
-- [x] Create Repo
-- [x] Create Vault server
+- [x] Create Vault Docker server
+- [x] Setup config for app
+- [x] Connect to Vault
+  - [x] Load Vault secrets into config
+- [ ] Create Binace API Token
+  - [ ] Add token to vault
+  - [ ] Update config
+- [ ] Connect to Binace websocket
