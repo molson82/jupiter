@@ -58,6 +58,7 @@ func New() (*Config, error) {
 func loadVaultKeys(client *vaultAPI.Client) (Keys, error) {
 	req := client.NewRequest("GET", "/v1/kv-v1/jupiter/keys")
 	resp, err := client.RawRequest(req)
+	defer resp.Body.Close()
 
 	var respBody VaultAPIResponse
 	err = resp.DecodeJSON(&respBody)
