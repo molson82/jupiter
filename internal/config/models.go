@@ -6,8 +6,8 @@ type VaultAPIResponse struct {
 	Renewable     bool   `json:"renewable"`
 	LeaseDuration int    `json:"lease_duration"`
 	Data          struct {
-		DatabaseURL string `json:"database_url"`
-		Test        string `json:"test"`
+		BinanceAPIKey string `json:"binance_api_key"`
+		BinanceSecret string `json:"binance_secret"`
 	} `json:"data"`
 	WrapInfo interface{} `json:"wrap_info"`
 	Warnings interface{} `json:"warnings"`

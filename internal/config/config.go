@@ -8,8 +8,8 @@ import (
 )
 
 type Keys struct {
-	Test        string `json:"test"`
-	DatabaseURL string `json:"database_url"`
+	BinanceAPIKey string `json:"binance_api_key"`
+	BinanceSecret string `json:"binance_secret"`
 }
 
 type Config struct {
@@ -68,8 +68,8 @@ func loadVaultKeys(client *vaultAPI.Client) (Keys, error) {
 	}
 
 	return Keys{
-		Test:        respBody.Data.Test,
-		DatabaseURL: respBody.Data.DatabaseURL,
+		BinanceAPIKey: respBody.Data.BinanceAPIKey,
+		BinanceSecret: respBody.Data.BinanceSecret,
 	}, nil
 }
 
