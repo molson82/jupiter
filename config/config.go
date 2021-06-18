@@ -46,26 +46,18 @@ func New() (*Config, error) {
 		LogLevel: os.Getenv("LOG_LEVEL"),
 	}
 
-	vaultConfig := vaultAPI.DefaultConfig()
-	err = vaultConfig.ReadEnvironment()
-	if err != nil {
-		log.Println("vaultConfig err")
-		return &Config{}, err
-	}
-
-	vaultClient, err := vaultAPI.NewClient(vaultConfig)
-	if err != nil {
-		log.Println("vaultClient err")
-		return &Config{}, err
-	}
-
-	vaultKeys, err := loadVaultKeys(vaultClient)
+	vaultKeys, err := loadVaultKeys()
 	if err != nil {
 		log.Println("loadVaultKeys err")
-		return &Config{}, err
+		log.Println("using config/env vars instead")
+		AppConfig.Keys = Keys{
+			BinanceAPIKey: os.Getenv("BINANCE_API_KEY"),
+			BinanceSecret: os.Getenv("BINANCE_SECRET"),
+			SentryDSN:     os.Getenv("SENTRY_DSN"),
+		}
+	} else {
+		AppConfig.Keys = vaultKeys
 	}
-
-	AppConfig.Keys = vaultKeys
 
 	// Sentry setup
 	if err = sentry.Init(sentry.ClientOptions{
@@ -81,7 +73,20 @@ func New() (*Config, error) {
 	return &AppConfig, nil
 }
 
-func loadVaultKeys(client *vaultAPI.Client) (Keys, error) {
+func loadVaultKeys() (Keys, error) {
+	vaultConfig := vaultAPI.DefaultConfig()
+	err := vaultConfig.ReadEnvironment()
+	if err != nil {
+		log.Println("vaultConfig err")
+		return Keys{}, err
+	}
+
+	client, err := vaultAPI.NewClient(vaultConfig)
+	if err != nil {
+		log.Println("vaultClient err")
+		return Keys{}, err
+	}
+
 	req := client.NewRequest("GET", "/v1/kv-v1/jupiter/keys")
 	resp, err := client.RawRequest(req)
 	defer resp.Body.Close()
