@@ -8,6 +8,7 @@ type VaultAPIResponse struct {
 	Data          struct {
 		BinanceAPIKey string `json:"binance_api_key"`
 		BinanceSecret string `json:"binance_secret"`
+		SentryDSN     string `json:"sentry_dsn"`
 	} `json:"data"`
 	WrapInfo interface{} `json:"wrap_info"`
 	Warnings interface{} `json:"warnings"`
