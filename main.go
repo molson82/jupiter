@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog"
@@ -22,6 +23,8 @@ func routes(c *config.Config) *chi.Mux {
 		LogLevel: c.Constants.LogLevel,
 	})
 
+	sentry := sentryhttp.New(sentryhttp.Options{})
+
 	r.Use(render.SetContentType(render.ContentTypeJSON),
 		middleware.RequestID,
 		middleware.RedirectSlashes,
@@ -29,7 +32,7 @@ func routes(c *config.Config) *chi.Mux {
 		middleware.Recoverer)
 
 	r.Route("/api", func(r chi.Router) {
-		r.Mount("/heartbeat", controllers.HeartbeatRoutes(c))
+		r.Mount("/heartbeat", sentry.Handle(controllers.HeartbeatRoutes(c)))
 	})
 
 	return r

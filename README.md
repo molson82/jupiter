@@ -14,5 +14,6 @@ Let's see how far this rabbit hole goes.
   - [x] Update config
 - [x] Set up Sentry for monitoring
   - [x] Add Sentry key/dsn to Vault
-- [ ] Make local dev use Vault, Prod use env variables
+  - [x] Add Sentry middleware
+- [x] Make local dev use Vault, Prod use env variables
 - [ ] Connect to Binace websocket
