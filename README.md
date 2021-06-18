@@ -16,4 +16,5 @@ Let's see how far this rabbit hole goes.
   - [x] Add Sentry key/dsn to Vault
   - [x] Add Sentry middleware
 - [x] Make local dev use Vault, Prod use env variables
+- [x] Create docker and docker-compose files
 - [ ] Connect to Binace websocket
