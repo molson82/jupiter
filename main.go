@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/molson82/jupiter/config"
 	"github.com/molson82/jupiter/controllers"
+	"github.com/molson82/jupiter/crypto"
 )
 
 func routes(c *config.Config) *chi.Mux {
@@ -45,6 +46,8 @@ func main() {
 	}
 
 	router := routes(config)
+
+	go crypto.BinanceConnect()
 
 	log.Printf("Jupiter Go server running on PORT %v...\n", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
