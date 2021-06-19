@@ -8,7 +8,7 @@ import (
 
 func BinanceConnect() {
 	log.Println("connecting to wss")
-	conn, _, err := websocket.DefaultDialer.Dial("wss://stream.binancefuture.com/ws/btcusdt@markPrice", nil)
+	conn, _, err := websocket.DefaultDialer.Dial("wss://fstream.binance.com/ws/ethusdt@ticker", nil)
 	if err != nil {
 		log.Println("error dialing wss")
 		return
@@ -22,6 +22,6 @@ func BinanceConnect() {
 			//return
 		}
 
-		log.Printf("recv: %v\n", message)
+		log.Printf("recv: %v\n", string(message))
 	}
 }
