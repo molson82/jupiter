@@ -17,14 +17,21 @@ type Keys struct {
 }
 
 type Constants struct {
-	Port       string `json:"port"`
-	LogLevel   string `json:"log_level"`
-	WssBaseURL string `json:"wss_base_url"`
+	Port              string `json:"port"`
+	LogLevel          string `json:"log_level"`
+	WssFuturesBaseURL string `json:"wss_futures_base_url"`
+	WssSpotBaseURL    string `json:"wss_spot_base_url"`
+}
+
+type Symbols struct {
+	ETH string `json:"eth"`
+	BTC string `json:"btc"`
 }
 
 type Config struct {
 	Keys
 	Constants
+	Symbols
 }
 
 var AppConfig Config
@@ -43,9 +50,15 @@ func New() (*Config, error) {
 	AppConfig = Config{}
 
 	AppConfig.Constants = Constants{
-		Port:       os.Getenv("PORT"),
-		LogLevel:   os.Getenv("LOG_LEVEL"),
-		WssBaseURL: os.Getenv("WSS_BASE_URL"),
+		Port:              os.Getenv("PORT"),
+		LogLevel:          os.Getenv("LOG_LEVEL"),
+		WssFuturesBaseURL: os.Getenv("WSS_FUTURES_BASE_URL"),
+		WssSpotBaseURL:    os.Getenv("WSS_SPOT_BASE_URL"),
+	}
+
+	AppConfig.Symbols = Symbols{
+		ETH: "ethusdt",
+		BTC: "btcusdt",
 	}
 
 	vaultKeys, err := loadVaultKeys()
