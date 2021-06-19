@@ -47,7 +47,8 @@ func main() {
 
 	router := routes(config)
 
-	go crypto.BinanceConnect()
+	go crypto.BinanceEthTicker(config)
+	go crypto.BinanceEthTrades(config)
 
 	log.Printf("Jupiter Go server running on PORT %v...\n", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))

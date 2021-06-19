@@ -17,8 +17,9 @@ type Keys struct {
 }
 
 type Constants struct {
-	Port     string `json:"port"`
-	LogLevel string `json:"log_level"`
+	Port       string `json:"port"`
+	LogLevel   string `json:"log_level"`
+	WssBaseURL string `json:"wss_base_url"`
 }
 
 type Config struct {
@@ -42,8 +43,9 @@ func New() (*Config, error) {
 	AppConfig = Config{}
 
 	AppConfig.Constants = Constants{
-		Port:     os.Getenv("PORT"),
-		LogLevel: os.Getenv("LOG_LEVEL"),
+		Port:       os.Getenv("PORT"),
+		LogLevel:   os.Getenv("LOG_LEVEL"),
+		WssBaseURL: os.Getenv("WSS_BASE_URL"),
 	}
 
 	vaultKeys, err := loadVaultKeys()
