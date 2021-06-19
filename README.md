@@ -17,4 +17,10 @@ Let's see how far this rabbit hole goes.
   - [x] Add Sentry middleware
 - [x] Make local dev use Vault, Prod use env variables
 - [x] Create docker and docker-compose files
-- [ ] Connect to Binace websocket
+- [x] Connect to Binace websocket
+  - [x] ETH trades
+  - [x] ETH mark price
+  - [x] ETH 24hr rolling window ticker
+- [ ] Create database schema
+- [ ] Store coin info
+- [ ] Make bot
