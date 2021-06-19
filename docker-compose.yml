@@ -13,7 +13,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=answersdb
+      - POSTGRES_DB=cryptodb
     # restart: unless-stopped
 
   jupiter-crypto-app:

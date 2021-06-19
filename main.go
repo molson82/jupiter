@@ -13,6 +13,7 @@ import (
 	"github.com/molson82/jupiter/config"
 	"github.com/molson82/jupiter/controllers"
 	"github.com/molson82/jupiter/crypto"
+	"github.com/molson82/jupiter/models"
 )
 
 func routes(c *config.Config) *chi.Mux {
@@ -37,6 +38,12 @@ func routes(c *config.Config) *chi.Mux {
 	})
 
 	return r
+}
+
+func migrations(c *config.Config) {
+	c.Psql.DB.AutoMigrate(&models.Stonks{})
+	c.Psql.DB.AutoMigrate(&models.Buys{})
+	c.Psql.DB.AutoMigrate(&models.Sells{})
 }
 
 func main() {

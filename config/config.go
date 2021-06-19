@@ -1,13 +1,19 @@
 package config
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/getsentry/sentry-go"
 	vaultAPI "github.com/hashicorp/vault/api"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Keys struct {
@@ -21,6 +27,7 @@ type Constants struct {
 	LogLevel          string `json:"log_level"`
 	WssFuturesBaseURL string `json:"wss_futures_base_url"`
 	WssSpotBaseURL    string `json:"wss_spot_base_url"`
+	DatabaseURL       string `json:"database_url"`
 }
 
 type Symbols struct {
@@ -28,10 +35,15 @@ type Symbols struct {
 	BTC string `json:"btc"`
 }
 
+type PsqlInstance struct {
+	DB *gorm.DB
+}
+
 type Config struct {
 	Keys
 	Constants
 	Symbols
+	Psql PsqlInstance
 }
 
 var AppConfig Config
@@ -48,12 +60,14 @@ func New() (*Config, error) {
 	}
 
 	AppConfig = Config{}
+	var psql PsqlInstance
 
 	AppConfig.Constants = Constants{
 		Port:              os.Getenv("PORT"),
 		LogLevel:          os.Getenv("LOG_LEVEL"),
 		WssFuturesBaseURL: os.Getenv("WSS_FUTURES_BASE_URL"),
 		WssSpotBaseURL:    os.Getenv("WSS_SPOT_BASE_URL"),
+		DatabaseURL:       os.Getenv("DATABASE_URL"),
 	}
 
 	AppConfig.Symbols = Symbols{
@@ -84,6 +98,24 @@ func New() (*Config, error) {
 	defer sentry.Flush(2 * time.Second)
 	sentry.CaptureMessage("Jupiter Go Crypto bot - Build")
 	log.Println("sentry connected")
+
+	// Gorm setup
+	log.Println(fmt.Sprintf("Connecting to db: %v", getDSN(AppConfig.Constants.DatabaseURL)))
+	database, err := sql.Open("postgres", getDSN(AppConfig.Constants.DatabaseURL))
+	if err != nil {
+		log.Println("gorm connection err")
+		return &Config{}, err
+	}
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: database,
+	}), &gorm.Config{})
+	if err != nil {
+		log.Println("gorm setup/config err")
+		return &Config{}, err
+	}
+	psql.DB = gormDB
+
+	AppConfig.Psql = psql
 
 	return &AppConfig, nil
 }
@@ -118,6 +150,26 @@ func loadVaultKeys() (Keys, error) {
 		BinanceSecret: respBody.Data.BinanceSecret,
 		SentryDSN:     respBody.Data.SentryDSN,
 	}, nil
+}
+
+func getDSN(url string) string {
+	var host string
+	var user string
+	var password string
+	var dbname string
+	var port string
+
+	s1 := strings.Split(url, "://")
+	s2 := strings.Split(s1[1], ":")
+	user = s2[0]
+	s3 := strings.Split(s2[1], "@")
+	password = s3[0]
+	host = s3[1]
+	s4 := strings.Split(s2[2], "/")
+	port = s4[0]
+	dbname = s4[1]
+
+	return fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", host, user, password, dbname, port)
 }
 
 func initEnv() error {
