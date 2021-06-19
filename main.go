@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/render"
 	"github.com/molson82/jupiter/config"
 	"github.com/molson82/jupiter/controllers"
-	"github.com/molson82/jupiter/crypto"
 	"github.com/molson82/jupiter/models"
 )
 
@@ -54,9 +53,11 @@ func main() {
 
 	router := routes(config)
 
-	go crypto.BinanceEthTicker(config)
-	go crypto.BinanceEthTrades(config)
-	go crypto.BinanceEthMarkPrice(config)
+	migrations(config)
+
+	//go crypto.BinanceEthTicker(config)
+	//go crypto.BinanceEthTrades(config)
+	//go crypto.BinanceEthMarkPrice(config)
 
 	log.Printf("Jupiter Go server running on PORT %v...\n", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
