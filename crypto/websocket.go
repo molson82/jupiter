@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/gorilla/websocket"
@@ -32,23 +33,8 @@ func BinanceEthTicker(c *config.Config) {
 
 		log.Printf("recv: %v\n", string(message))
 
-		var ethTick models.IndvSymbolTicker
-		err = json.Unmarshal(message, &ethTick)
-		if err != nil {
-			log.Printf("error unmarshalling message: %v\n", err)
-			return
-		}
-
-		c.Psql.DB.Create(&table.Stonks{
-			Symbol:               ethTick.Symbol,
-			PriceChange:          ethTick.PriceChange,
-			PriceChangePercent:   ethTick.PriceChangePercent,
-			WeightedAveragePrice: ethTick.WeightedAveragePrice,
-			LastPrice:            ethTick.LastPrice,
-			FullPayload:          string(message),
-		})
-
-		sentry.CaptureMessage(fmt.Sprintf("Created %v Stonks Table row.", ethTick.Symbol))
+		createBinanceTickerEntry(message, c)
+		time.Sleep(10 * time.Second)
 	}
 }
 
@@ -92,4 +78,25 @@ func BinanceEthMarkPrice(c *config.Config) {
 
 		log.Printf("recv: %v\n", string(message))
 	}
+}
+
+func createBinanceTickerEntry(message []byte, c *config.Config) {
+	var ethTick models.IndvSymbolTicker
+	err := json.Unmarshal(message, &ethTick)
+	if err != nil {
+		log.Printf("error unmarshalling message: %v\n", err)
+		return
+	}
+
+	c.Psql.DB.Create(&table.Stonks{
+		Symbol:               ethTick.Symbol,
+		PriceChange:          ethTick.PriceChange,
+		PriceChangePercent:   ethTick.PriceChangePercent,
+		WeightedAveragePrice: ethTick.WeightedAveragePrice,
+		LastPrice:            ethTick.LastPrice,
+		FullPayload:          string(message),
+	})
+
+	sentry.CaptureMessage(fmt.Sprintf("Created %v Stonks Table row.", ethTick.Symbol))
+	return
 }

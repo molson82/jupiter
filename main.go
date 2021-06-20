@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/molson82/jupiter/config"
 	"github.com/molson82/jupiter/controllers"
+	"github.com/molson82/jupiter/crypto"
 	"github.com/molson82/jupiter/models"
 )
 
@@ -55,7 +56,7 @@ func main() {
 
 	migrations(config)
 
-	//go crypto.BinanceEthTicker(config)
+	go crypto.BinanceEthTicker(config)
 	//go crypto.BinanceEthTrades(config)
 	//go crypto.BinanceEthMarkPrice(config)
 

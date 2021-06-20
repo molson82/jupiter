@@ -21,6 +21,7 @@ Let's see how far this rabbit hole goes.
   - [x] ETH trades
   - [x] ETH mark price
   - [x] ETH 24hr rolling window ticker
-- [ ] Create database schema
-- [ ] Store coin info
+- [x] Create database schema
+- [x] Store coin info
+  - [x] Only save data every 15 min
 - [ ] Make bot

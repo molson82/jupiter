@@ -16,18 +16,18 @@ services:
       - POSTGRES_DB=cryptodb
     # restart: unless-stopped
 
-  jupiter-crypto-app:
-    image: jupiter:latest
-    network_mode: bridge
-    container_name: jupiter-crypto-app
-    build: .
-    expose:
-      - 8888
-    ports:
-      - 8888:8888
-    depends_on:
-      - jupiter-crypto-postgres
-    links:
-      - jupiter-crypto-postgres
+  #jupiter-crypto-app:
+    #image: jupiter:latest
+    #network_mode: bridge
+    #container_name: jupiter-crypto-app
+    #build: .
+    #expose:
+      #- 8888
+    #ports:
+      #- 8888:8888
+    #depends_on:
+      #- jupiter-crypto-postgres
+    #links:
+      #- jupiter-crypto-postgres
 volumes:
   jupiter-crypto-data:
