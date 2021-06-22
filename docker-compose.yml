@@ -1,9 +1,9 @@
 version: "3"
 services:
-  jupiter-crypto-postgres:
+  jupiter-postgres:
     image: postgres:latest
     network_mode: bridge
-    container_name: jupiter-crypto-postgres
+    container_name: jupiter-postgres
     volumes:
       - jupiter-crypto-data:/var/lib/postgresql/data
     expose:
@@ -16,18 +16,53 @@ services:
       - POSTGRES_DB=cryptodb
     # restart: unless-stopped
 
-  #jupiter-crypto-app:
-    #image: jupiter:latest
-    #network_mode: bridge
-    #container_name: jupiter-crypto-app
-    #build: .
-    #expose:
-      #- 8888
-    #ports:
-      #- 8888:8888
-    #depends_on:
-      #- jupiter-crypto-postgres
-    #links:
-      #- jupiter-crypto-postgres
+  jupiter-bot:
+    image: bot:latest
+    network_mode: bridge
+    container_name: jupiter-bot
+    build: ./bot
+    expose:
+      - 8880
+    ports:
+      - 8880:8880
+    depends_on:
+      - jupiter-postgres
+
+  jupiter-graphql:
+    image: graphql:latest
+    network_mode: bridge
+    container_name: jupiter-graphql
+    build: ./graphql
+    expose:
+      - 8881
+    ports:
+      - 8881:8881
+    depends_on:
+      - jupiter-postgres
+
+  jupiter-btc:
+    image: btc:latest
+    network_mode: bridge
+    container_name: jupiter-btc
+    build: ./streams/btc
+    expose:
+      - 8882
+    ports:
+      - 8882:8882
+    depends_on:
+      - jupiter-postgres
+        
+  jupiter-eth:
+    image: eth:latest
+    network_mode: bridge
+    container_name: jupiter-eth
+    build: ./streams/eth
+    expose:
+      - 8883
+    ports:
+      - 8883:8883
+    depends_on:
+      - jupiter-postgres
+
 volumes:
   jupiter-crypto-data:
