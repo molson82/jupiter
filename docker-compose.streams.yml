@@ -1,0 +1,44 @@
+version: "3"
+services:
+  jupiter-postgres:
+    image: postgres:latest
+    network_mode: bridge
+    container_name: jupiter-postgres
+    volumes:
+      - jupiter-crypto-data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=cryptodb
+    # restart: unless-stopped
+
+  jupiter-btc:
+    image: btc:latest
+    network_mode: bridge
+    container_name: jupiter-btc
+    build: ./streams/btc
+    expose:
+      - 8882
+    ports:
+      - 8882:8882
+    depends_on:
+      - jupiter-postgres
+        
+  jupiter-eth:
+    image: eth:latest
+    network_mode: bridge
+    container_name: jupiter-eth
+    build: ./streams/eth
+    expose:
+      - 8883
+    ports:
+      - 8883:8883
+    depends_on:
+      - jupiter-postgres
+
+volumes:
+  jupiter-crypto-data:
